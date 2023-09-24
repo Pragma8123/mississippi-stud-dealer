@@ -6,11 +6,12 @@
   import { Card } from './Card';
   import { Deck } from './Deck';
   import type { Advantage } from './Advantage';
+  import type { GamePhase } from './GamePhase';
 
+  let phase: GamePhase = 'deal';
   let deck = new Deck();
   let player: Card[] = [];
   let community: Card[] = [];
-  let reveal = false;
   let advantage: Advantage = -1;
 
   onMount(() => {
@@ -18,10 +19,10 @@
   });
 
   function reset() {
+    phase = 'deal';
     deck = new Deck();
     player = [];
     community = [];
-    reveal = false;
 
     // Draw community cards
     for (let i = 0; i < 3; i++) {
@@ -34,19 +35,60 @@
     }
   }
 
-  function revealCards() {
-    reveal = true;
+  function advancePhase() {
+    switch (phase) {
+      case 'deal': {
+        if (advantage === 0) {
+          phase = 'fourth';
+        } else {
+          phase = 'third';
+        }
+        break;
+      }
+
+      case 'third': {
+        if (advantage === 1) {
+          phase = 'fifth';
+        } else {
+          phase = 'fourth';
+        }
+        break;
+      }
+
+      case 'fourth': {
+        phase = 'fifth';
+        break;
+      }
+    }
   }
 </script>
 
 <div class="container">
   <!-- Community Cards -->
   <div class="columns is-mobile is-centered is-gapless">
-    {#each community as card, i}
-      <div class="column is-1">
-        <PokerCard faceUp={reveal || i == 2 - advantage} {card} />
-      </div>
-    {/each}
+    <!-- Fifth Street -->
+    <div class="column is-1">
+      <PokerCard
+        faceUp={phase === 'fifth' || advantage === 2}
+        card={community[0]}
+      />
+    </div>
+
+    <!-- Fourth Street -->
+    <div class="column is-1">
+      <PokerCard
+        faceUp={phase === 'fourth' || phase === 'fifth' || advantage === 1}
+        card={community[1]}
+      />
+    </div>
+
+    <!-- Third Street -->
+    <div class="column is-1">
+      <PokerCard
+        faceUp={phase !== 'deal' || advantage === 0}
+        card={community[2]}
+      />
+    </div>
   </div>
 
   <!-- Player Cards -->
@@ -62,9 +104,10 @@
   <div class="columns is-mobile is-centered is-gapless">
     <div class="column">
       <PokerControls
+        {phase}
         bind:advantage
         on:deal={() => reset()}
-        on:reveal={() => revealCards()}
+        on:continue={() => advancePhase()}
       />
     </div>
   </div>

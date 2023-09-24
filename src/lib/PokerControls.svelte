@@ -2,7 +2,9 @@
   import { createEventDispatcher } from 'svelte';
 
   import type { Advantage } from './Advantage';
+  import type { GamePhase } from './GamePhase';
 
+  export let phase: GamePhase;
   export let advantage: Advantage = -1;
 
   const dispatch = createEventDispatcher();
@@ -18,10 +20,15 @@
         </button>
       </div>
 
-      <!-- Reveal -->
+      <!-- Continue -->
       <div class="control">
-        <button class="button is-primary" on:click={() => dispatch('reveal')}>
-          Reveal
+        <button
+          class="button is-primary"
+          disabled={phase === 'fifth' ||
+            (phase === 'fourth' && advantage === 2)}
+          on:click={() => dispatch('continue')}
+        >
+          Continue
         </button>
       </div>
     </div>
