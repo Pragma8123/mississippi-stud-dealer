@@ -1,3 +1,4 @@
+---
 name: Build and Push Docker Image on Release
 on:
   push:
@@ -14,7 +15,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          version: 'lts/hydrogen'
+          node-version-file: '.nvmrc'
+          cache: 'npm'
 
       - name: NPM Install
         run: npm install
