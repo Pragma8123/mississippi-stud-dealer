@@ -17,7 +17,7 @@ jobs:
           version: 'lts/hydrogen'
 
       - name: NPM Install
-        run: npm Install
+        run: npm install
 
       - name: Lint
         run: npm run format:check
