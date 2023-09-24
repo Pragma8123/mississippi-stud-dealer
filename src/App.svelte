@@ -7,9 +7,7 @@
     <div class="container">
       <nav class="level">
         <div class="level-item has-text-centered">
-          <div class="content">
-            <p class="title">Mississippi Stud Dealer</p>
-          </div>
+          <p class="title">Mississippi Stud Dealer</p>
         </div>
       </nav>
     </div>
